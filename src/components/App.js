@@ -46,6 +46,8 @@ export default class App extends Component {
 
     noaSubmit = () => window.open(`/doc/noa/${this.state.casenum}`);
 
+    noaKeyPress = (e) => {if (e.key === 'Enter') this.noaSubmit();}
+
     casenumChange = (e) => {
         const value = e.target.value;
         this.setState((oldState) => ({
@@ -69,8 +71,14 @@ export default class App extends Component {
             <div className={styles.outerDiv}>
                 <div className={styles.innerDiv}>
                     Case Number: 
-                    <input className={styles.textInput} type='text' value={this.state.casenum} onChange={this.casenumChange}/>
-                    <button onClick={this.noaSubmit}>Notice of Appearance</button>
+                    <input 
+                        className={styles.textInput} 
+                        type='text' 
+                        value={this.state.casenum} 
+                        onChange={this.casenumChange}
+                        onKeyPress={this.noaKeyPress}
+                    />
+                    <button type='submit' onClick={this.noaSubmit}>Notice of Appearance</button>
                 </div>
             </div>
         );

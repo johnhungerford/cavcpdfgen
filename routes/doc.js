@@ -67,6 +67,9 @@ const parseCaseReport = (req, res, next) => {
 const genNoa = (req, res, next) => {
     const doc = new pdfkit();
 
+    const bold = 'fonts/Arial Bold.ttf';
+    const norm = 'fonts/Arial.ttf';
+
     res.statusCode = 200;
     res.setHeader('Content-type', 'application/pdf');
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -76,36 +79,36 @@ const genNoa = (req, res, next) => {
     const lh = doc.heightOfString('TEST', { width: doc.widthOfString('TEST')}) + 2;
 
     doc.fontSize(13);
-    doc.font('fonts/Arial-BoldMT.otf').text('IN THE UNITED STATES COURT OF APPEALS', x, y, {align: 'center', paragraphGap: 0});
+    doc.font(bold).text('IN THE UNITED STATES COURT OF APPEALS', x, y, {align: 'center', paragraphGap: 0});
     y += lh;
-    doc.font('fonts/Arial-BoldMT.otf').text('FOR VETERANS CLAIMS', x, y, {align: 'center', paragraphGap: 0});
+    doc.font(bold).text('FOR VETERANS CLAIMS', x, y, {align: 'center', paragraphGap: 0});
     y += 2*lh;
 
     const yDocketTop = y;
-    doc.font('fonts/Arial-BoldMT.otf').text(`${res.locals.party1[0].toUpperCase()},`, x, y, {align: 'left'});
+    doc.font(bold).text(`${res.locals.party1[0].toUpperCase()},`, x, y, {align: 'left'});
     for (let i = 1; i < res.locals.party1.length - 1; i++) {
         y += lh;
-        doc.font('fonts/Arial-MT.otf').text(`${res.locals.party1[i]},`, x, y, {align: 'left'});
+        doc.font(norm).text(`${res.locals.party1[i]},`, x, y, {align: 'left'});
     }
 
     y += lh;
     x += 72 / 2;
     console.log(res.locals.party1[res.locals.party1.length - 1]);
-    doc.font('fonts/Arial-MT.otf').text(`${res.locals.party1[res.locals.party1.length - 1]},`, x, y, {align: 'left'});
+    doc.font(norm).text(`${res.locals.party1[res.locals.party1.length - 1]},`, x, y, {align: 'left'});
     y += (res.locals.party1.length + res.locals.party2.length <= 5 ? 2 : 1) * lh;
     x = 72;
     doc.text('v.', x, y, {align: 'left'});
     if (res.locals.party1.length + res.locals.party2.length <= 5) y += lh;
     y += lh;
-    doc.font('fonts/Arial-BoldMT.otf').text(`${res.locals.party2[0].toUpperCase()},`, x, y, {align: 'left'});
+    doc.font(bold).text(`${res.locals.party2[0].toUpperCase()},`, x, y, {align: 'left'});
     for (let i = 1; i < res.locals.party2.length - 1; i++) {
         y += lh;
-        doc.font('fonts/Arial-MT.otf').text(`${res.locals.party2[i]},`, x, y, {align: 'left'});
+        doc.font(norm).text(`${res.locals.party2[i]},`, x, y, {align: 'left'});
     }
 
     y += lh;
     x += 72 / 2;
-    doc.font('fonts/Arial-MT.otf').text(`${res.locals.party2[res.locals.party2.length - 1]},`, x, y, {align: 'left'});
+    doc.font(norm).text(`${res.locals.party2[res.locals.party2.length - 1]},`, x, y, {align: 'left'});
 
     y = yDocketTop;
     x = 72;
@@ -127,9 +130,9 @@ const genNoa = (req, res, next) => {
 
     y += lh / 2;
     x = 72;
-    doc.font('fonts/Arial-BoldMT.otf').text('NOTICE OF APPEARANCE', x, y, {align: 'center'});
+    doc.font(bold).text('NOTICE OF APPEARANCE', x, y, {align: 'center'});
     y += lh * 2;
-    doc.font('fonts/Arial-MT.otf').text(
+    doc.font(norm).text(
         'The Clerk will please enter my appearance for the Secretary as the representative of record. I hereby certify that I am admitted to practice before this Court. I will accept service for the Secretary.',
         x, y,
         {align: 'left', indent: 36, lineGap: lh / 2}
@@ -139,13 +142,13 @@ const genNoa = (req, res, next) => {
     
 
     x += 3 * 72;
-    doc.font('fonts/Arial-MT.otf').text('Respectfully submitted,', x, y);
+    doc.font(norm).text('Respectfully submitted,', x, y);
     y += 2 * lh;
     doc.text(`/s/ ${res.locals.user.fullname}`, x, y, {underline: true});
     y += lh;
-    doc.font('fonts/Arial-BoldMT.otf').text(`${res.locals.user.fullname.toUpperCase()}`, x, y);
+    doc.font(bold).text(`${res.locals.user.fullname.toUpperCase()}`, x, y);
     y += lh;
-    doc.font('fonts/Arial-MT.otf').text(`Appellate Attorney`, x, y);
+    doc.font(norm).text(`Appellate Attorney`, x, y);
     y += lh;
     doc.text(`${res.locals.user.office}`, x, y);
     y += lh;
