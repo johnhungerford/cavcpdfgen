@@ -12,9 +12,16 @@
     padding: 30px;
     border: 1px solid black;
     background-color: white;
+    text-align: center;
 }
 
 .textInput {
-    margin-left: 5px;
-    margin-right: 5px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding-left: 1em;
+    padding-right: 1em;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: bold;
 }
+

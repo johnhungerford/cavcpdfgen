@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import Login from './login/Login';
 import Register from './login/Register';
+import Button from './common/Button';
 
 import * as ajax from '../api/ajaxfunctions';
 
@@ -80,17 +81,20 @@ export default class App extends Component {
         return (
             <div className={styles.outerDiv}>
                 <div className={styles.innerDiv}>
-                    Case Number: 
-                    <input 
-                        className={styles.textInput} 
-                        type='text' 
-                        value={this.state.casenum}
-                        autoFocus={true}
-                        onChange={this.casenumChange}
-                        onKeyPress={this.noaKeyPress}
-                        ref={this.inputRef}
-                    />
-                    <button type='submit' onClick={this.noaSubmit}>Notice of Appearance</button>
+                    <div>Case Number</div>
+                    <div>
+                        <input 
+                            className={styles.textInput} 
+                            type='text' 
+                            value={this.state.casenum}
+                            autoFocus={true}
+                            onChange={this.casenumChange}
+                            onKeyPress={this.noaKeyPress}
+                            size='7'
+                            ref={this.inputRef}
+                        />
+                    </div>
+                    <div><Button clickHandler={this.noaSubmit}>Notice of Appearance</Button></div>
                 </div>
             </div>
         );
