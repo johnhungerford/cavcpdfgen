@@ -187,13 +187,18 @@ router.get('/test', (req, res, next) => {
                 message: `bad token: ${err.message}`
             });
             
-            if (decoded.username === undefined) return res.json({
+            if (decoded.user.username === undefined) return res.json({
                 success: false,
                 message: 'token is missing username...',
             });
 
             return res.json({success: true, token: decoded});
         });
+});
+
+router.get('/logout', (req, res, next) => {
+    delete req.session.webloadertoken;
+    return res.json({success: true});
 });
 
 module.exports = router;

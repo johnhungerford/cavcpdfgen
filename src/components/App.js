@@ -25,11 +25,10 @@ export default class App extends Component {
 
         this.inputRef = React.createRef();
 
-        ajax.postJSON(
+        ajax.getJSON(
             this.setState,
             this.state.auth,
-            `/login`,
-            { test: true },
+            `/login/test`,
             (data)=>{
                 if (data.success) {
                     this.setState((oldState) => ({
@@ -38,6 +37,28 @@ export default class App extends Component {
                             ...oldState.auth,
                             promptlogin: false,
                             loggedin: true,
+                        }
+                    }));
+                }
+            }
+        );
+    }
+
+    logout = () => {
+        ajax.getJSON(
+            this.setState,
+            this.state.auth,
+            `/login/logout`,
+            (data)=>{
+                if (data.success) {
+                    this.setState((oldState) => ({
+                        ...oldState,
+                        auth: {
+                            ...oldState.auth,
+                            promptlogin: true,
+                            loggedin: false,
+                            register: false,
+                            password: '',
                         }
                     }));
                 }
@@ -95,6 +116,12 @@ export default class App extends Component {
                         />
                     </div>
                     <div><Button clickHandler={this.noaSubmit}>Notice of Appearance</Button></div>
+                    <div className={styles.logoutButtonDiv}>
+                        <Button
+                            option='small'
+                            clickHandler={this.logout}
+                        >Logout</Button>
+                    </div>
                 </div>
             </div>
         );
