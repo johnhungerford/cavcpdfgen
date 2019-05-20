@@ -22,6 +22,8 @@ export default class App extends Component {
             }
         }
 
+        this.inputRef = React.createRef();
+
         ajax.postJSON(
             this.setState,
             this.state.auth,
@@ -44,12 +46,20 @@ export default class App extends Component {
 
     stateSet = (fn1, fn2) => this.setState(fn1, fn2);
 
-    noaSubmit = () => window.open(`/doc/noa/${this.state.casenum}`);
+    noaSubmit = () => {
+        window.open(`/doc/noa/${this.state.casenum}`);
+        this.inputRef.current.focus();
+        this.inputRef.current.select();
+    }
 
     noaKeyPress = (e) => {if (e.key === 'Enter') this.noaSubmit();}
 
     casenumChange = (e) => {
-        const value = e.target.value;
+        let value = e.target.value;
+        value = value.replace(/\D/g, '');
+        if (value.length > 2) value = `${value.slice(0,2)}-${value.slice(2)}`;
+        if (value.length === 2) value = value + '-';
+        if (value.length > 7) value = value.slice(0,7);
         this.setState((oldState) => ({
             ...oldState,
             casenum: value,
@@ -74,9 +84,11 @@ export default class App extends Component {
                     <input 
                         className={styles.textInput} 
                         type='text' 
-                        value={this.state.casenum} 
+                        value={this.state.casenum}
+                        autoFocus={true}
                         onChange={this.casenumChange}
                         onKeyPress={this.noaKeyPress}
+                        ref={this.inputRef}
                     />
                     <button type='submit' onClick={this.noaSubmit}>Notice of Appearance</button>
                 </div>
