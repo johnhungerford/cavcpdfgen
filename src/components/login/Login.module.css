@@ -1,0 +1,62 @@
+.panelOuter {
+    position: relative;
+    height: 98%;
+    width: 99%;
+    background-color: gray;
+}
+
+.panelInner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.container {
+    display: block;
+    padding: 10px;
+    border: 1px solid black;
+    text-align: center;
+    background-color: white;
+}
+
+.textinputs {
+    display: inline-block;
+    text-align: right;
+}
+
+.userName {
+    margin-bottom: 15px;
+}
+
+.password {
+    margin-bottom: 20px;
+}
+
+.submit {
+    margin-bottom: 24px;
+}
+
+.login {
+    margin-right: 40px;
+}
+
+.login:hover {
+    margin-right: 39px;
+}
+
+.register {
+    
+}
+
+.error {
+    display: inline-block;
+    font-size: 14px;
+    color: red;
+    font-weight: bold;
+    max-width: 275;
+    white-space: normal;
+    text-align: left;
+    margin-bottom: 12px;
+}
+
