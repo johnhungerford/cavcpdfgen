@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import Login from './login/Login';
+import UpdateProfile from './login/UpdateProfile';
 import Register from './login/Register';
 import Button from './common/Button';
 
@@ -20,6 +21,19 @@ export default class App extends Component {
                 loggedin: false,
                 promptlogin: true,
                 register: false,
+            },
+            updateProfile: false,
+            profile: {
+                email: '',
+                fullname: '',
+                title: '',
+                office: '',
+                department: '',
+                street: '',
+                city: '',
+                state: '',
+                zip: '',
+                phone: '',
             }
         }
 
@@ -37,7 +51,8 @@ export default class App extends Component {
                             ...oldState.auth,
                             promptlogin: false,
                             loggedin: true,
-                        }
+                        },
+                        profile: data.profile,
                     }));
                 }
             }
@@ -64,6 +79,19 @@ export default class App extends Component {
                 }
             }
         );
+    }
+
+    updateProfile = () => {
+        this.setState((oldState) => ({
+            ...oldState,
+            auth: {
+                ...oldState.auth,
+                register: false,
+                promptlogin: false,
+                password: '',
+            },
+            updateProfile: true,
+        }));
     }
 
     stateSet = (fn1, fn2) => this.setState(fn1, fn2);
@@ -97,6 +125,14 @@ export default class App extends Component {
             <div><Login setState={this.stateSet} auth={this.state.auth}/></div>
         );
 
+        if (this.state.updateProfile) return (
+            <div><UpdateProfile 
+                setState={this.stateSet} 
+                auth={this.state.auth}
+                profile={this.state.profile}
+            /></div>
+        )
+
         console.log(this.state);
 
         return (
@@ -117,6 +153,10 @@ export default class App extends Component {
                     </div>
                     <div><Button clickHandler={this.noaSubmit}>Notice of Appearance</Button></div>
                     <div className={styles.logoutButtonDiv}>
+                        <span style={{ marginRight: 10, }}><Button
+                            option='small'
+                            clickHandler={this.updateProfile}
+                        >Edit Profile</Button></span>
                         <Button
                             option='small'
                             clickHandler={this.logout}

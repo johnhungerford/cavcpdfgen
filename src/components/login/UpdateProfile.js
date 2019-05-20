@@ -7,96 +7,108 @@ import * as ajax from '../../api/ajaxfunctions';
 
 import styles from './Login.module.css';
 
-export default class Register extends Component {
+export default class UpdateProfile extends Component {
     constructor(props) {
         super(props);
 
-        this.state = {
-            username: this.props.auth.username,
+        this.state = { 
+            username: '',
             password1: '',
             password2: '',
-            email1: '',
-            fullname: '',
-            title: '',
-            office: '',
-            department: '',
-            street: '',
-            city: '',
-            state: '',
-            zip: '',
-            phone: '',
             err: false,
             errMessage: '',
-        }
+        };
+
+        console.log('PROPS!!!');
+        console.log(this.props);
     }
 
-    submit = () => {            
-        if (
-            this.state.username.length < 6 ||
-            this.state.username.search(';') > -1 ||
-            !/^[A-Za-z0-9_-]+$/.test(this.state.username)
-        ) {
-            return this.setState((oldState) => {
-                return {
-                    ...oldState,
-                    err: true,
-                    errMessage: 'Invalid username: must be more than 5 characters and contain only alphanumeric characters and "-", "_"',
-                }
-            });
-        }
-    
-        if (this.state.password1 !== this.state.password2) {
-            return this.setState((oldState) => {
-                return {
-                    ...oldState,
-                    err: true,
-                    errMessage: `Passwords do not match!`,
-                }
-            });
+    submit = () => {
+        if (this.props.auth.password === '') {
+            return this.setState((oldState) => ({
+                ...oldState,
+                err: true,
+                errMessage: 'You must enter your current password to make changes'
+            }));
         }
 
-        if (
-            this.state.password1.length < 8 ||
-            !/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&~])/.test(this.state.password1)
-        ) {
-            return this.setState((oldState) => {
-                return {
-                    ...oldState,
-                    err: true,
-                    errMessage: `Invalid password: must be more than 7 characters and contain at least one lower case letter, one uppercase letter, one numerical digit, and one special character (!@#$%^&~)`,
-                }
-            });
+        if (this.state.username !== '') {
+            if (
+                this.state.username.length < 6 ||
+                this.state.username.search(';') > -1 ||
+                !/^[A-Za-z0-9_-]+$/.test(this.state.username)
+            ) {
+                return this.setState((oldState) => {
+                    return {
+                        ...oldState,
+                        err: true,
+                        errMessage: 'Invalid username: must be more than 5 characters and contain only alphanumeric characters and "-", "_"',
+                    }
+                });
+            }
+        }     
+        
+        if (this.state.password1 !== '' && this.state.password2 != '') {
+            if (this.state.password1 !== this.state.password2) {
+                return this.setState((oldState) => {
+                    return {
+                        ...oldState,
+                        err: true,
+                        errMessage: `Passwords do not match!`,
+                    }
+                });
+            }
+
+            if (
+                this.state.password1.length < 8 ||
+                !/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&~])/.test(this.state.password1)
+            ) {
+                return this.setState((oldState) => {
+                    return {
+                        ...oldState,
+                        err: true,
+                        errMessage: `Invalid password: must be more than 7 characters and contain at least one lower case letter, one uppercase letter, one numerical digit, and one special character (!@#$%^&~)`,
+                    }
+                });
+            }
         }
 
-        const reEmail = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
-        if (!reEmail.test(this.state.email)) {
-            return this.setState((oldState) => {
-                return {
-                    ...oldState,
-                    err: true,
-                    errMessage: `Invalid email address`,
-                }
-            });
+        if (this.props.profile.email !== '') {
+            const reEmail = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
+            if (!reEmail.test(this.props.profile.email)) {
+                return this.setState((oldState) => {
+                    return {
+                        ...oldState,
+                        err: true,
+                        errMessage: `Invalid email address`,
+                    }
+                });
+            }
         }
+
+        const updateObj = {
+            username: this.props.auth.username,
+            password: this.props.auth.password,
+        };
+
+        if (this.state.username !== '') updateObj.newusername = this.state.username;
+        if (this.state.password1 !== '') updateObj.newpassword = this.state.password;
+        if (this.props.profile.email !== '') updateObj.email = this.props.profile.email;
+        if (this.props.profile.phone !== '') updateObj.phone = this.props.profile.phone;
+        if (this.props.profile.title !== '') updateObj.title = this.props.profile.title;
+        if (this.props.profile.fullname !== '') updateObj.fullname = this.props.profile.fullname;
+        if (this.props.profile.office !== '') updateObj.office = this.props.profile.office;
+        if (this.props.profile.department !== '') updateObj.department = this.props.profile.department;
+        if (this.props.profile.street !== '') updateObj.street = this.props.profile.street;
+        if (this.props.profile.city !== '') updateObj.city = this.props.profile.city;
+        if (this.props.profile.state !== '') updateObj.state = this.props.profile.state;
+        if (this.props.profile.zip !== '') updateObj.zip = this.props.profile.zip;
 
         ajax.postJSON(
             this.props.setState,
             this.props.auth,
-            '/login/register',
-            { 
-                username: this.state.username,
-                password: this.state.password1,
-                email: this.state.email,
-                fullname: this.state.fullname,
-                title: this.state.title,
-                office: this.state.office,
-                department: this.state.department,
-                street: this.state.street,
-                city: this.state.city,
-                state: this.state.state,
-                zip: this.state.zip,
-                phone: this.state.phone,
-            },
+            '/login/update',
+            updateObj,
             (result) => {
                 if (!result.success) {
                     this.setState((oldState) => {
@@ -113,13 +125,7 @@ export default class Register extends Component {
                 console.log('Successful registration!');
                 this.props.setState((oldState) => ({
                     ...oldState,
-                    auth: {
-                        username: this.state.username,
-                        promptlogin: true,
-                        loggedin: false,
-                        register: false,
-                    },
-                    profile: result.profile,
+                    updateProfile: false,
                 }));
             },
             (err) => this.setState((oldState) => ({
@@ -142,13 +148,34 @@ export default class Register extends Component {
                     innerClass={styles.panelInner}
                 >
                     <div className={styles.container}>
-                        <h1>Register</h1>
+                        <h1>Update Profile</h1>
                         <div className={styles.textinputs}>
                             <div className={styles.error}>
                                 {this.state.err ? this.state.errMessage : null}
                             </div>
                             <div className={styles.userName}>
-                                Username: <input 
+                                {`Current Username: ${this.props.auth.username}`}
+                            </div>
+                            <div className={styles.password}>
+                                Current Password: <input 
+                                    type='password'
+                                    value={this.props.auth.password} 
+                                    onChange={(e)=>{
+                                        const value = e.target.value;
+                                        return this.props.setState((oldState) => {
+                                            return {
+                                                ...oldState,
+                                                auth: {
+                                                    ...oldState.auth,
+                                                    password: value,
+                                                }
+                                            }
+                                        });
+                                    }}
+                                />
+                            </div>
+                            <div className={styles.userName}>
+                                New Username: <input 
                                     type='text'
                                     value={this.state.username} 
                                     onChange={(e)=>{
@@ -163,7 +190,7 @@ export default class Register extends Component {
                                 />
                             </div>
                             <div className={styles.password}>
-                                Password: <input 
+                                New Password: <input 
                                     type='password'
                                     value={this.state.password1} 
                                     onChange={(e)=>{
@@ -178,7 +205,7 @@ export default class Register extends Component {
                                 />
                             </div>
                             <div className={styles.password}>
-                                Re-enter Password: <input 
+                                Re-Enter New Password: <input 
                                     type='password'
                                     value={this.state.password2} 
                                     onChange={(e)=>{
@@ -195,13 +222,16 @@ export default class Register extends Component {
                             <div className={styles.password}>
                                 Email: <input 
                                     type='text'
-                                    value={this.state.email} 
+                                    value={this.props.profile.email} 
                                     onChange={(e)=>{
                                         const value = e.target.value;
-                                        return this.setState((oldState) => {
+                                        return this.props.setState((oldState) => {
                                             return {
                                                 ...oldState,
-                                                email: value,
+                                                profile: {
+                                                    ...oldState.profile,
+                                                    email: value,
+                                                },
                                             }
                                         });
                                     }}
@@ -210,13 +240,16 @@ export default class Register extends Component {
                             <div className={styles.password}>
                                 Full Name: <input 
                                     type='text'
-                                    value={this.state.fullname} 
+                                    value={this.props.profile.fullname} 
                                     onChange={(e)=>{
                                         const value = e.target.value;
-                                        return this.setState((oldState) => {
+                                        return this.props.setState((oldState) => {
                                             return {
                                                 ...oldState,
-                                                fullname: value,
+                                                profile: {
+                                                    ...oldState.profile,
+                                                    fullname: value,
+                                                },
                                             }
                                         });
                                     }}
@@ -225,13 +258,16 @@ export default class Register extends Component {
                             <div className={styles.password}>
                                 Title: <input 
                                     type='text'
-                                    value={this.state.title} 
+                                    value={this.props.profile.title} 
                                     onChange={(e)=>{
                                         const value = e.target.value;
-                                        return this.setState((oldState) => {
+                                        return this.props.setState((oldState) => {
                                             return {
                                                 ...oldState,
-                                                title: value,
+                                                profile: {
+                                                    ...oldState.profile,
+                                                    title: value,
+                                                },
                                             }
                                         });
                                     }}
@@ -240,13 +276,16 @@ export default class Register extends Component {
                             <div className={styles.password}>
                                 Office: <input 
                                     type='text'
-                                    value={this.state.office} 
+                                    value={this.props.profile.office} 
                                     onChange={(e)=>{
                                         const value = e.target.value;
-                                        return this.setState((oldState) => {
+                                        return this.props.setState((oldState) => {
                                             return {
                                                 ...oldState,
-                                                office: value,
+                                                profile: {
+                                                    ...oldState.profile,
+                                                    office: value,
+                                                },
                                             }
                                         });
                                     }}
@@ -255,13 +294,16 @@ export default class Register extends Component {
                             <div className={styles.password}>
                                 Department: <input 
                                     type='text'
-                                    value={this.state.department} 
+                                    value={this.props.profile.department} 
                                     onChange={(e)=>{
                                         const value = e.target.value;
-                                        return this.setState((oldState) => {
+                                        return this.props.setState((oldState) => {
                                             return {
                                                 ...oldState,
-                                                department: value,
+                                                profile: {
+                                                    ...oldState.profile,
+                                                    department: value,
+                                                },
                                             }
                                         });
                                     }}
@@ -270,13 +312,16 @@ export default class Register extends Component {
                             <div className={styles.password}>
                                 Street Address: <input 
                                     type='text'
-                                    value={this.state.street} 
+                                    value={this.props.profile.street} 
                                     onChange={(e)=>{
                                         const value = e.target.value;
-                                        return this.setState((oldState) => {
+                                        return this.props.setState((oldState) => {
                                             return {
                                                 ...oldState,
-                                                street: value,
+                                                profile: {
+                                                    ...oldState.profile,
+                                                    street: value,
+                                                },
                                             }
                                         });
                                     }}
@@ -285,13 +330,16 @@ export default class Register extends Component {
                             <div className={styles.password}>
                                 City: <input 
                                     type='text'
-                                    value={this.state.city} 
+                                    value={this.props.profile.city} 
                                     onChange={(e)=>{
                                         const value = e.target.value;
-                                        return this.setState((oldState) => {
+                                        return this.props.setState((oldState) => {
                                             return {
                                                 ...oldState,
-                                                city: value,
+                                                profile: {
+                                                    ...oldState.profile,
+                                                    city: value,
+                                                },
                                             }
                                         });
                                     }}
@@ -300,43 +348,52 @@ export default class Register extends Component {
                             <div className={styles.password}>
                                 State: <input 
                                     type='text'
-                                    value={this.state.state} 
+                                    value={this.props.profile.state} 
                                     onChange={(e)=>{
                                         const value = e.target.value;
-                                        return this.setState((oldState) => {
+                                        return this.props.setState((oldState) => {
                                             return {
                                                 ...oldState,
-                                                state: value,
+                                                profile: {
+                                                    ...oldState.profile,
+                                                    state: value,
+                                                },
                                             }
                                         });
                                     }}
                                 />
                             </div>
                             <div className={styles.password}>
-                                Zip Code: <input 
+                                Postal Code: <input 
                                     type='text'
-                                    value={this.state.zip} 
+                                    value={this.props.profile.zip} 
                                     onChange={(e)=>{
                                         const value = e.target.value;
-                                        return this.setState((oldState) => {
+                                        return this.props.setState((oldState) => {
                                             return {
                                                 ...oldState,
-                                                zip: value,
+                                                profile: {
+                                                    ...oldState.profile,
+                                                    zip: value,
+                                                },
                                             }
                                         });
                                     }}
                                 />
                             </div>
                             <div className={styles.password}>
-                                Phone: <input 
+                                Phone Number: <input 
                                     type='text'
-                                    value={this.state.phone} 
+                                    value={this.props.profile.phone} 
                                     onChange={(e)=>{
                                         const value = e.target.value;
-                                        return this.setState((oldState) => {
+                                        return this.props.setState((oldState) => {
                                             return {
                                                 ...oldState,
-                                                phone: value,
+                                                profile: {
+                                                    ...oldState.profile,
+                                                    phone: value,
+                                                },
                                             }
                                         });
                                     }}
@@ -348,21 +405,14 @@ export default class Register extends Component {
                                 class={styles.login}
                                 clickHandler={this.submit}
                             >
-                                Register
+                                Update
                             </Button>
                             <Button 
                                 class={styles.register}
                                 clickHandler={()=>{
                                     this.props.setState((oldState) => ({
                                         ...oldState,
-                                        auth: {
-                                            ...oldState.auth,
-                                            loggedin: false,
-                                            username: this.state.username,
-                                            password: '',
-                                            promptlogin: true,
-                                            register: false,
-                                        }
+                                        updateProfile: false,
                                     }));
                                 }}
                             >

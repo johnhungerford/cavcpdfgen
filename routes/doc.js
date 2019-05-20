@@ -152,6 +152,8 @@ const genNoa = (req, res, next) => {
     y += lh;
     doc.text(`${res.locals.user.office}`, x, y);
     y += lh;
+    doc.text(`${res.locals.user.department}`, x, y);
+    y += lh;
     doc.text(`${res.locals.user.street}`, x, y);
     y += lh;
     doc.text(`${res.locals.user.city}, ${res.locals.user.state} ${res.locals.user.zip}`, x, y);

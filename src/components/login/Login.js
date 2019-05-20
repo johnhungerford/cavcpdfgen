@@ -55,7 +55,8 @@ export default class DataEntry extends Component {
                         ...oldState.auth,
                         loggedin: true,
                         promptlogin: false,
-                    }
+                    },
+                    profile: result.profile,
                 }));
             },
             (err) => { return console.log(err.message); }
