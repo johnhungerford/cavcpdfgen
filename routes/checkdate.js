@@ -31,6 +31,7 @@ function isHoliday(dateIn) {
     }
 
     if (day === 4 && month === 10 && week === 3) return true;
+    if (day === 5 && month === 10 && week === 3) return true;
 
     const newYrDay = new Date(`January 1, ${year}`).getDay();
     const newYrDayNextYr = new Date(`January 1, ${year + 1}`).getDay();
