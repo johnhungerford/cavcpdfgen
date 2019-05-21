@@ -228,11 +228,9 @@ export default class App extends Component {
                     </div>
                     <div className={styles.logoutButtonDiv}>
                         <span style={{ marginRight: 50, }}><Button
-                            option='small'
                             clickHandler={this.updateProfile}
                         >Edit Profile</Button></span>
                         <Button
-                            option='small'
                             clickHandler={this.logout}
                         >Logout</Button>
                     </div>
