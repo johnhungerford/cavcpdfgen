@@ -102,6 +102,12 @@ export default class App extends Component {
         this.inputRef.current.select();
     }
 
+    staySubmit = () => {
+        window.open(`/doc/stay/${this.state.casenum}`);
+        this.inputRef.current.focus();
+        this.inputRef.current.select();
+    }
+
     noaKeyPress = (e) => {if (e.key === 'Enter') this.noaSubmit();}
 
     casenumChange = (e) => {
@@ -152,6 +158,7 @@ export default class App extends Component {
                         />
                     </div>
                     <div><Button clickHandler={this.noaSubmit}>Notice of Appearance</Button></div>
+                    <div><Button clickHandler={this.staySubmit}>Motion for Stay</Button></div>
                     <div className={styles.logoutButtonDiv}>
                         <span style={{ marginRight: 10, }}><Button
                             option='small'
