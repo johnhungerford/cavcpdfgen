@@ -25,12 +25,16 @@ export default class Register extends Component {
             state: '',
             zip: '',
             phone: '',
+            general: '',
+            chief: '',
+            deputy: '',
             err: false,
             errMessage: '',
         }
     }
 
-    submit = () => {            
+    submit = () => {
+        console.log('Submitting!');
         if (
             this.state.username.length < 6 ||
             this.state.username.search(';') > -1 ||
@@ -96,6 +100,9 @@ export default class Register extends Component {
                 state: this.state.state,
                 zip: this.state.zip,
                 phone: this.state.phone,
+                general: this.state.general,
+                chief: this.state.chief,
+                deputy: this.state.deputy,
             },
             (result) => {
                 if (!result.success) {
@@ -342,6 +349,54 @@ export default class Register extends Component {
                                     }}
                                 />
                             </div>
+                            <div className={styles.password}>
+                                General Counsel (Full Name): <input 
+                                    type='text'
+                                    value={this.state.general} 
+                                    onChange={(e)=>{
+                                        const value = e.target.value;
+                                        return this.setState((oldState) => {
+                                            return {
+                                                ...oldState,
+                                                general: value,
+                                            }
+                                        });
+                                    }}
+                                />
+                            </div>
+                            <div className={styles.password}>
+                                Chief Counsel (Full Name): <input 
+                                    type='text'
+                                    value={this.state.chief} 
+                                    onChange={(e)=>{
+                                        const value = e.target.value;
+                                        return this.setState((oldState) => {
+                                            return {
+                                                ...oldState,
+                                                chief: value,
+                                            }
+                                        });
+                                    }}
+                                />
+                            </div>
+                            <div className={styles.password}>
+                                Deputy Chief Counsel (Full Name): <input 
+                                    type='text'
+                                    value={this.state.deputy} 
+                                    onChange={(e)=>{
+                                        const value = e.target.value;
+                                        return this.setState((oldState) => {
+                                            return {
+                                                ...oldState,
+                                                deputy: value,
+                                            }
+                                        });
+                                    }}
+                                />
+                            </div>
+                        </div>
+                        <div className={styles.error}>
+                            {this.state.err ? this.state.errMessage : null}
                         </div>
                         <div className={styles.submit}>
                             <Button 

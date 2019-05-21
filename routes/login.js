@@ -68,6 +68,9 @@ router.post('/', function(req, res, next) {
                             zip: resQuery[0].zip,
                             phone: resQuery[0].phone,
                             email: resQuery[0].email,
+                            general: resQuery[0].general,
+                            chief: resQuery[0].chief,
+                            deputy: resQuery[0].deputy,
                             id: resQuery[0].id,
                         }
                     }, 
@@ -97,6 +100,9 @@ router.post('/', function(req, res, next) {
                                 zip: resQuery[0].zip,
                                 phone: resQuery[0].phone,
                                 email: resQuery[0].email,
+                                general: resQuery[0].general,
+                                chief: resQuery[0].chief,
+                                deputy: resQuery[0].deputy,
                                 id: resQuery[0].id,
                             },
                             id: resQuery[0].id,
@@ -170,6 +176,9 @@ router.post('/register', function(req, res, next) {
                         city: req.body.city,
                         state: req.body.state,
                         zip: req.body.zip,
+                        general: req.body.general,
+                        chief: req.body.chief,
+                        deputy: req.body.chief,
                     },
                     (errInsert, resInsert) => {
                         if (errInsert) return res.json({ success: false, message: 'Unable to create user', err: errInsert});
@@ -210,6 +219,9 @@ router.post('/update', jwtAuthenticate, (req, res, next) => {
                 if (req.body.city) setObj.city = req.body.city;
                 if (req.body.state) setObj.state = req.body.state;
                 if (req.body.zip) setObj.zip = req.body.zip;
+                if (req.body.general) setObj.general = req.body.general;
+                if (req.body.chief) setObj.chief = req.body.chief;
+                if (req.body.deputy) setObj.deputy = req.body.deputy;
 
                 if (req.body.newpassword) {
                     bcrypt.hash(req.body.newpassword, 12, function(errHash, resHash) {
@@ -282,6 +294,9 @@ router.get('/test', (req, res, next) => {
                     city: decoded.user.city,
                     state: decoded.user.state,
                     zip: decoded.user.zip,
+                    general: decoded.user.general,
+                    chief: decoded.user.chief,
+                    deputy: decoded.user.deputy,
                 }
             });
         });

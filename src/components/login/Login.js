@@ -48,6 +48,12 @@ export default class DataEntry extends Component {
                     return console.log(result.message);
                 }
 
+                const profile = {};
+                for (let i in result.profile) {
+                    if (result.profile[i] === null) profile[i] = '';
+                    else profile[i] = result.profile[i];
+                }
+
                 console.log('SUCCESS!');
                 this.props.setState((oldState) => ({
                     ...oldState,
@@ -56,7 +62,7 @@ export default class DataEntry extends Component {
                         loggedin: true,
                         promptlogin: false,
                     },
-                    profile: result.profile,
+                    profile: profile,
                 }));
             },
             (err) => { return console.log(err.message); }

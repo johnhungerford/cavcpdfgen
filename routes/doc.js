@@ -353,7 +353,21 @@ const genStay = (req, res, next) => {
     y += lh;
     x += 3 * 72;
     doc.font(norm).text('Respectfully submitted,', x, y);
-    y += 2 * lh;
+    y += 1.8 * lh;
+    doc.font(bold).text(`${res.locals.user.general.toUpperCase()}`, x, y);
+    y += lh;
+    doc.font(norm).text(`General Counsel`, x, y);
+    y += 1.8 * lh;
+    doc.font(bold).text(`${res.locals.user.chief.toUpperCase()}`, x, y);
+    y += lh;
+    doc.font(norm).text(`Chief Counsel`, x, y);
+    y += 1.8 * lh;
+    doc.text(`/s/ ${res.locals.user.deputy}`, x, y, {underline: true});
+    y += lh;
+    doc.font(bold).text(`${res.locals.user.deputy.toUpperCase()}`, x, y);
+    y += lh;
+    doc.font(norm).text(`Deputy Chief Counsel`, x, y);
+    y += 1.8 * lh;
     doc.text(`/s/ ${res.locals.user.fullname}`, x, y, {underline: true});
     y += lh;
     doc.font(bold).text(`${res.locals.user.fullname.toUpperCase()}`, x, y);
@@ -369,12 +383,6 @@ const genStay = (req, res, next) => {
     doc.text(`${res.locals.user.city}, ${res.locals.user.state} ${res.locals.user.zip}`, x, y);
     y += lh;
     doc.text(`${res.locals.user.phone}`, x, y);
-    y += lh;
-    doc.text(`${res.locals.user.email}`, x, y);
-    y += 2 * lh;
-    doc.text(`Attorney for the Appellee`, x, y);
-    y += lh;
-    doc.text(`Secretary of Veterans Affairs`, x, y);
 
     doc.pipe(res);
     doc.end();

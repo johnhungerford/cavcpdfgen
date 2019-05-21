@@ -24,6 +24,7 @@ export default class UpdateProfile extends Component {
     }
 
     submit = () => {
+        console.log('Submitting!');
         if (this.props.auth.password === '') {
             return this.setState((oldState) => ({
                 ...oldState,
@@ -103,6 +104,9 @@ export default class UpdateProfile extends Component {
         if (this.props.profile.city !== '') updateObj.city = this.props.profile.city;
         if (this.props.profile.state !== '') updateObj.state = this.props.profile.state;
         if (this.props.profile.zip !== '') updateObj.zip = this.props.profile.zip;
+        if (this.props.profile.general !== '') updateObj.general = this.props.profile.general;
+        if (this.props.profile.chief !== '') updateObj.chief = this.props.profile.chief;
+        if (this.props.profile.deputy !== '') updateObj.deputy = this.props.profile.deputy;
 
         ajax.postJSON(
             this.props.setState,
@@ -399,6 +403,63 @@ export default class UpdateProfile extends Component {
                                     }}
                                 />
                             </div>
+                            <div className={styles.password}>
+                                General Counsel (Full Name): <input 
+                                    type='text'
+                                    value={this.props.profile.general} 
+                                    onChange={(e)=>{
+                                        const value = e.target.value;
+                                        return this.props.setState((oldState) => {
+                                            return {
+                                                ...oldState,
+                                                profile: {
+                                                    ...oldState.profile,
+                                                    general: value,
+                                                },
+                                            }
+                                        });
+                                    }}
+                                />
+                            </div>
+                            <div className={styles.password}>
+                                Chief Counsel (Full Name): <input 
+                                    type='text'
+                                    value={this.props.profile.chief} 
+                                    onChange={(e)=>{
+                                        const value = e.target.value;
+                                        return this.props.setState((oldState) => {
+                                            return {
+                                                ...oldState,
+                                                profile: {
+                                                    ...oldState.profile,
+                                                    chief: value,
+                                                },
+                                            }
+                                        });
+                                    }}
+                                />
+                            </div>
+                            <div className={styles.password}>
+                                Deputy Chief Counsel (Full Name): <input 
+                                    type='text'
+                                    value={this.props.profile.deputy} 
+                                    onChange={(e)=>{
+                                        const value = e.target.value;
+                                        return this.props.setState((oldState) => {
+                                            return {
+                                                ...oldState,
+                                                profile: {
+                                                    ...oldState.profile,
+                                                    deputy: value,
+                                                },
+                                            }
+                                        });
+                                    }}
+                                />
+                            </div>
+                        </div>
+                        <div className={styles.error}>
+                            {this.state.err ? this.state.errMessage : null}
                         </div>
                         <div className={styles.submit}>
                             <Button 
