@@ -1,0 +1,8 @@
+{
+    "mysql": {
+        "host": "jhmysql.cb9ejs7bx77s.us-east-2.rds.amazonaws.com",
+        "user": "cavcpdfgen",
+        "password": "wthMd4zKF4pUWk58o2RY",
+        "database": "cavcpdfgen"
+    }
+} 
