@@ -173,7 +173,7 @@ const genNoa = (req, res, next) => {
 const genDates = (req, res, next) => {
     let dateDoc;
     if (req.params.date) {
-        dateDoc = new Date(req.params.date);
+        dateDoc = new Date(req.params.date + 'T05:00:00.000Z');
     } else {
         dateDoc = new Date();
     }
@@ -205,14 +205,16 @@ const genDates = (req, res, next) => {
     }
 
     function isHoliday(dateIn) {
-        const [ month, date, day, monthweek, year ] = [
+        const [ month, date, day, week, year ] = [
             dateIn.getMonth(),
             dateIn.getDate(),
             dateIn.getDay(),
-            Math.floor(dateIn.getDate() + 1 / 7),
+            Math.floor((dateIn.getDate() - 1) / 7),
             dateIn.getYear(),
         ]
         
+        console.log(`Month: ${month}; Date: ${date}; Day: ${day}; Week: ${week}; Year: ${year}`);
+
         if (day === 1) {
             if (week === 0) {
                 if (month === 8) return true;

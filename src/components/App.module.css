@@ -15,6 +15,11 @@
     text-align: center;
 }
 
+.errMsg {
+    color: red;
+    font-weight: bold;
+}
+
 .textInput {
     margin-top: 10px;
     margin-bottom: 10px;
@@ -26,6 +31,20 @@
 }
 
 .logoutButtonDiv {
-    margin-top: 20px;
+    margin-top: 50px;
+}
+
+.stayDiv {
+    margin-top: 15px;
+}
+
+.dateInput {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    text-align: center;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: bold;
+    margin-right: 10px;
 }
 

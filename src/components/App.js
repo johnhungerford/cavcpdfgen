@@ -15,6 +15,7 @@ export default class App extends Component {
 
         this.state = {
             casenum: '',
+            date: '',
             auth: {
                 username: '',
                 password: '',
@@ -34,7 +35,9 @@ export default class App extends Component {
                 state: '',
                 zip: '',
                 phone: '',
-            }
+            },
+            err: false,
+            errMessage: '',
         }
 
         this.inputRef = React.createRef();
@@ -97,18 +100,35 @@ export default class App extends Component {
     stateSet = (fn1, fn2) => this.setState(fn1, fn2);
 
     noaSubmit = () => {
+        if (this.state.casenum.length !== 7) return this.setState((oldState) => ({
+            ...oldState,
+            err: true,
+            errMessage: 'Case Number is required for a Notice of Appearance',
+        }));
+
         window.open(`/doc/noa/${this.state.casenum}`);
         this.inputRef.current.focus();
         this.inputRef.current.select();
     }
 
     staySubmit = () => {
-        window.open(`/doc/stay/${this.state.casenum}`);
+        if (this.state.casenum.length !== 7) return this.setState((oldState) => ({
+            ...oldState,
+            err: true,
+            errMessage: 'Case Number is required for a Motion to Stay',
+        }));
+        
+        window.open(
+            this.state.date === '' ? 
+                `/doc/stay/${this.state.casenum}` : 
+                `/doc/stay/${this.state.casenum}/${this.state.date}`
+        );
         this.inputRef.current.focus();
         this.inputRef.current.select();
     }
 
     noaKeyPress = (e) => {if (e.key === 'Enter') this.noaSubmit();}
+    stayKeyPress = (e) => {if (e.key === 'Enter') this.staySubmit();}
 
     casenumChange = (e) => {
         let value = e.target.value;
@@ -119,6 +139,28 @@ export default class App extends Component {
         this.setState((oldState) => ({
             ...oldState,
             casenum: value,
+            err: false,
+            errMessage: '',
+        }));
+    }
+
+    stayChange = (e) => {
+        let value = e.target.value;
+        this.setState((oldState) => ({
+            ...oldState,
+            date: value,
+            err: false,
+            errMessage: '',
+        }));
+    }
+
+    today = () => {
+        const dateToday = new Date();
+        this.setState((oldState) => ({
+            ...oldState,
+            date: new Date(dateToday.getTime() - (dateToday.getTimezoneOffset() * 60000 ))
+                .toISOString()
+                .split('T')[0],
         }));
     }
 
@@ -144,23 +186,48 @@ export default class App extends Component {
         return (
             <div className={styles.outerDiv}>
                 <div className={styles.innerDiv}>
-                    <div>Case Number</div>
                     <div>
-                        <input 
-                            className={styles.textInput} 
-                            type='text' 
-                            value={this.state.casenum}
-                            autoFocus={true}
-                            onChange={this.casenumChange}
-                            onKeyPress={this.noaKeyPress}
-                            size='7'
-                            ref={this.inputRef}
-                        />
+                        {
+                            this.state.err ? 
+                                <span className={styles.errMsg}>{this.state.errMessage}</span> :
+                                ''
+                        }
+                    </div>
+                    <div className={styles.noaDiv}>
+                        <div>Case Number</div>
+                        <div onKeyPress={this.noaKeyPress}>
+                            <input 
+                                className={styles.textInput} 
+                                type='text' 
+                                value={this.state.casenum}
+                                autoFocus={true}
+                                onChange={this.casenumChange}
+                                size='7'
+                                ref={this.inputRef}
+                            />
+                        </div>
                     </div>
                     <div><Button clickHandler={this.noaSubmit}>Notice of Appearance</Button></div>
-                    <div><Button clickHandler={this.staySubmit}>Motion for Stay</Button></div>
+                    <div className={styles.stayDiv}>
+                        <div>Stay Submission Date</div>
+                        <div onKeyPress={this.stayKeyPress}>
+                            <input 
+                                className={styles.dateInput} 
+                                type='date' 
+                                value={this.state.date}
+                                onChange={this.stayChange}
+                                onKeyPress={this.stayKeyPress}
+                                size='7'
+                            />
+                            <Button
+                                option='small'
+                                clickHandler={this.today}
+                            >Today</Button>
+                        </div>
+                        <div><Button clickHandler={this.staySubmit}>Motion for Stay</Button></div>
+                    </div>
                     <div className={styles.logoutButtonDiv}>
-                        <span style={{ marginRight: 10, }}><Button
+                        <span style={{ marginRight: 50, }}><Button
                             option='small'
                             clickHandler={this.updateProfile}
                         >Edit Profile</Button></span>
