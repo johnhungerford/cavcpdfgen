@@ -12,9 +12,39 @@
     padding: 30px;
     border: 1px solid black;
     background-color: white;
+    text-align: center;
+}
+
+.errMsg {
+    color: red;
+    font-weight: bold;
 }
 
 .textInput {
-    margin-left: 5px;
-    margin-right: 5px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding-left: 1em;
+    padding-right: 1em;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: bold;
 }
+
+.logoutButtonDiv {
+    margin-top: 50px;
+}
+
+.stayDiv {
+    margin-top: 15px;
+}
+
+.dateInput {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    text-align: center;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: bold;
+    margin-right: 10px;
+}
+

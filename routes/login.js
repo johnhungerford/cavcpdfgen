@@ -1,6 +1,7 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const jwtAuthenticate = require('./jwtauthenticate');
 
 const router = express.Router();
 
@@ -60,12 +61,16 @@ router.post('/', function(req, res, next) {
                             fullname: resQuery[0].fullname,
                             title: resQuery[0].title,
                             office: resQuery[0].office,
+                            department: resQuery[0].department,
                             street: resQuery[0].street,
                             city: resQuery[0].city,
                             state: resQuery[0].state,
                             zip: resQuery[0].zip,
                             phone: resQuery[0].phone,
                             email: resQuery[0].email,
+                            general: resQuery[0].general,
+                            chief: resQuery[0].chief,
+                            deputy: resQuery[0].deputy,
                             id: resQuery[0].id,
                         }
                     }, 
@@ -84,6 +89,22 @@ router.post('/', function(req, res, next) {
                         return res.json({
                             success: true,
                             username: username,
+                            profile: {
+                                fullname: resQuery[0].fullname,
+                                title: resQuery[0].title,
+                                office: resQuery[0].office,
+                                department: resQuery[0].department,
+                                street: resQuery[0].street,
+                                city: resQuery[0].city,
+                                state: resQuery[0].state,
+                                zip: resQuery[0].zip,
+                                phone: resQuery[0].phone,
+                                email: resQuery[0].email,
+                                general: resQuery[0].general,
+                                chief: resQuery[0].chief,
+                                deputy: resQuery[0].deputy,
+                                id: resQuery[0].id,
+                            },
                             id: resQuery[0].id,
                         });
                     }
@@ -149,14 +170,81 @@ router.post('/register', function(req, res, next) {
                         phone: req.body.phone,
                         fullname: req.body.fullname,
                         title: req.body.title,
+                        department: req.body.department,
                         office: req.body.office,
                         street: req.body.street,
                         city: req.body.city,
                         state: req.body.state,
                         zip: req.body.zip,
+                        general: req.body.general,
+                        chief: req.body.chief,
+                        deputy: req.body.chief,
                     },
                     (errInsert, resInsert) => {
                         if (errInsert) return res.json({ success: false, message: 'Unable to create user', err: errInsert});
+                        return res.json({ success: true, data: resInsert });
+                    }
+                );
+            });
+        }
+    );
+});
+
+router.post('/update', jwtAuthenticate, (req, res, next) => {
+    console.log(`/login/register router:\n\t Username: ${req.body.username}`);
+    if (req.body.username === undefined || req.body.password === undefined) return res.json({success: false, message: 'missing username or password'})
+    if (req.body.username !== res.locals.user.username) return res.json({ success: false, message: 'Can\'t update user that is not logged in!' });
+    global.mysql.query(
+        `SELECT * FROM users WHERE username="${req.body.username}";`,
+        (errSelect, resSelect) => {
+            if (errSelect) return res.json({ success: false, message: 'Unable to find user', err: errSelect });
+            
+            bcrypt.compare(req.body.password, resSelect[0].password, (errBcCmp, resBcCmp) => {
+                if (errBcCmp) {
+                    return res.json({
+                        success: false,
+                        message: 'unable to compare passwords: ' + errBcCmp.message,
+                    });
+                }
+
+                const setObj = {};
+                if (req.body.newusername) setObj.username = req.body.newusername;
+                if (req.body.email) setObj.email = req.body.email;
+                if (req.body.phone) setObj.phone = req.body.phone;
+                if (req.body.fullname) setObj.fullname = req.body.fullname;
+                if (req.body.title) setObj.title = req.body.title;
+                if (req.body.department) setObj.department = req.body.department;
+                if (req.body.office) setObj.office = req.body.office;
+                if (req.body.street) setObj.street = req.body.street;
+                if (req.body.city) setObj.city = req.body.city;
+                if (req.body.state) setObj.state = req.body.state;
+                if (req.body.zip) setObj.zip = req.body.zip;
+                if (req.body.general) setObj.general = req.body.general;
+                if (req.body.chief) setObj.chief = req.body.chief;
+                if (req.body.deputy) setObj.deputy = req.body.deputy;
+
+                if (req.body.newpassword) {
+                    bcrypt.hash(req.body.newpassword, 12, function(errHash, resHash) {
+                        if (errHash) return res.json({ success: false, message: 'Unable to encrypt password' , err: errHash});
+                        setObj.password = resHash;
+                        global.mysql.query(
+                            `UPDATE users SET ? WHERE username="${res.locals.user.username}"`,
+                            setObj,
+                            (errInsert, resInsert) => {
+                                if (errInsert) return res.json({ success: false, message: 'Unable to update user', err: errInsert});
+                                return res.json({ success: true, data: resInsert });
+                            }
+                        );
+                    });
+
+                    return;
+                }
+
+                global.mysql.query(
+                    `UPDATE users SET ? WHERE username="${res.locals.user.username}"`,
+                    setObj,
+                    (errInsert, resInsert) => {
+                        if (errInsert) return res.json({ success: false, message: 'Unable to update user', err: errInsert});
                         return res.json({ success: true, data: resInsert });
                     }
                 );
@@ -187,13 +275,36 @@ router.get('/test', (req, res, next) => {
                 message: `bad token: ${err.message}`
             });
             
-            if (decoded.username === undefined) return res.json({
+            if (decoded.user.username === undefined) return res.json({
                 success: false,
                 message: 'token is missing username...',
             });
 
-            return res.json({success: true, token: decoded});
+            return res.json({
+                success: true, 
+                username: decoded.user.username,
+                profile: {
+                    email: decoded.user.email,
+                    phone: decoded.user.phone,
+                    fullname: decoded.user.fullname,
+                    title: decoded.user.title,
+                    department: decoded.user.department,
+                    office: decoded.user.office,
+                    street: decoded.user.street,
+                    city: decoded.user.city,
+                    state: decoded.user.state,
+                    zip: decoded.user.zip,
+                    general: decoded.user.general,
+                    chief: decoded.user.chief,
+                    deputy: decoded.user.deputy,
+                }
+            });
         });
+});
+
+router.get('/logout', (req, res, next) => {
+    delete req.session.webloadertoken;
+    return res.json({success: true});
 });
 
 module.exports = router;
