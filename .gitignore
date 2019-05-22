@@ -1,3 +1,4 @@
 node_modules/
 mysql/
 public/javascripts/app.js
+.gitattributes
