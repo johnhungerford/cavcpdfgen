@@ -1,10 +1,10 @@
-function isWeekend(dateIn) {
+const isWeekend = (dateIn) => {
     const day = dateIn.getDay();
     if (day === 0 || day === 6) return true;
     return false;
 }
 
-function isHoliday(dateIn) {
+const isHoliday = (dateIn) => {
     const [ month, date, day, week, year ] = [
         dateIn.getMonth(),
         dateIn.getDate(),
@@ -31,7 +31,6 @@ function isHoliday(dateIn) {
     }
 
     if (day === 4 && month === 10 && week === 3) return true;
-    if (day === 5 && month === 10 && week === 3) return true;
 
     const newYrDay = new Date(`January 1, ${year}`).getDay();
     const newYrDayNextYr = new Date(`January 1, ${year + 1}`).getDay();
@@ -72,5 +71,35 @@ function isHoliday(dateIn) {
     return false;
 }
 
-module.exports.isWeekend = isWeekend;
-module.exports.isHoliday = isHoliday;
+module.exports.genStayDates = (req, res, next) => {
+    let dateDoc;
+    if (req.params.date) {
+        dateDoc = new Date(req.params.date + 'T05:00:00.000Z');
+    } else {
+        dateDoc = new Date();
+    }
+
+    let dateStay = new Date(dateDoc);
+    dateStay.setDate(dateStay.getDate() + 30);
+    while (true) {
+        if (isWeekend(dateStay)) {
+            dateStay.setDate(dateStay.getDate() + 1);
+        } else if (isHoliday(dateStay)) {
+            dateStay.setDate(dateStay.getDate() + 1);
+        } else {
+            break;
+        }
+    }
+
+    res.locals.dates = {
+        doc: dateDoc.toLocaleDateString('en-US', {year: 'numeric', month: 'long', day: 'numeric'}),
+        stay: dateStay.toLocaleDateString('en-US', {year: 'numeric', month: 'long', day: 'numeric'}),
+    }
+
+    console.log(res.locals);
+    return next();
+};
+
+module.exports.genExtensionDates = (req, res, next) => {
+
+};
