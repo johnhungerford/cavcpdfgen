@@ -3,10 +3,12 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "build": "npx webpack --mode production",
+    "build": "docker build -t cavcpdfgen --build-arg \"CONFIG_ARG=$(<config.json)\" .",
+    "deploy": "docker tag cavcpdfgen registry.heroku.com/cavcpdfgen/web && docker push registry.heroku.com/cavcpdfgen/web && heroku container:login && heroku container:release web && docker system prune -f",
+    "runbuild": "docker run -p 80:3000 cavcpdfgen",
     "watch": "npx webpack --mode development --watch",
     "test": "npx mocha --require @babel/register",
-    "dev-server": "npx nodemon ./bin/www",
+    "dev-server": "npx nodemon ./bin/www config.json",
     "dev-client": "npx webpack-dev-server",
     "dev": "npx concurrently --kill-others \"npm:watch\" \"npm:dev-server\"",
     "start": "node ./bin/www"

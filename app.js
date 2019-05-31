@@ -12,8 +12,21 @@ const jwtAuthenticate = require('./routes/jwtauthenticate');
 
 const app = express();
 
+console.log(process.argv);
+
+let configFn = process.argv.length > 2 ? process.argv[2] : null
+if (configFn !== null) {
+  configFn = configFn.slice(0,2) === './' || configFn.slice(0,1) === '/' ?
+    configFn : './' + configFn;
+}
+
+console.log(configFn);
+
 // Get MySQL connection from sql.config.json file
-const config = require('./config.json');
+const config = configFn === null ? JSON.parse(process.env.CONFIG) : require(configFn);
+process.env.CONFIG = '';
+
+console.log(config);
 
 // MySQL connection is needed to set up app; create a global pool for use by all routes
 global.mysql = mysqlLib.createPool(config.mysql);

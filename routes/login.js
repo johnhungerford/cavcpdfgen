@@ -27,7 +27,10 @@ router.post('/', function(req, res, next) {
         });
     }
 
-    global.mysql.query(`SELECT * FROM users WHERE username="${username}"`, function (err2, resQuery) {
+    global.mysql.query(
+        `SELECT * FROM users WHERE username=?`, 
+        [username], 
+        function (err2, resQuery) {
         if (err2) {
             return res.json({
                 success: false,
@@ -146,7 +149,8 @@ router.post('/register', function(req, res, next) {
     ) return res.json({ success: false, message: 'Missing or invalid email'})
 
     global.mysql.query(
-        `SELECT EXISTS(SELECT * FROM users WHERE username="${req.body.username}");`,
+        `SELECT EXISTS(SELECT * FROM users WHERE username=?);`,
+        [req.body.username],
         (errValidate, resValidate) => {
             if (errValidate) return res.json({ success: false, message: 'Unable to validate user', err: errValidate });
             let valid = false;
@@ -162,7 +166,7 @@ router.post('/register', function(req, res, next) {
             bcrypt.hash(req.body.password, 12, function(errHash, resHash) {
                 if (errHash) return res.json({ success: false, message: 'Unable to encrypt password' , err: errHash});
                 global.mysql.query(
-                    `INSERT INTO users SET ?`,
+                    `INSERT INTO users SET ?;`,
                     {
                         username: req.body.username,
                         password: resHash,
@@ -195,7 +199,8 @@ router.post('/update', jwtAuthenticate, (req, res, next) => {
     if (req.body.username === undefined || req.body.password === undefined) return res.json({success: false, message: 'missing username or password'})
     if (req.body.username !== res.locals.user.username) return res.json({ success: false, message: 'Can\'t update user that is not logged in!' });
     global.mysql.query(
-        `SELECT * FROM users WHERE username="${req.body.username}";`,
+        `SELECT * FROM users WHERE username=?;`, 
+        [req.body.username],
         (errSelect, resSelect) => {
             if (errSelect) return res.json({ success: false, message: 'Unable to find user', err: errSelect });
             
@@ -228,8 +233,8 @@ router.post('/update', jwtAuthenticate, (req, res, next) => {
                         if (errHash) return res.json({ success: false, message: 'Unable to encrypt password' , err: errHash});
                         setObj.password = resHash;
                         global.mysql.query(
-                            `UPDATE users SET ? WHERE username="${res.locals.user.username}"`,
-                            setObj,
+                            `UPDATE users SET ? WHERE username=?;`,
+                            [setObj, res.locals.user.username],
                             (errInsert, resInsert) => {
                                 if (errInsert) return res.json({ success: false, message: 'Unable to update user', err: errInsert});
                                 return res.json({ success: true, data: resInsert });
@@ -241,8 +246,8 @@ router.post('/update', jwtAuthenticate, (req, res, next) => {
                 }
 
                 global.mysql.query(
-                    `UPDATE users SET ? WHERE username="${res.locals.user.username}"`,
-                    setObj,
+                    `UPDATE users SET ? WHERE username=?;`,
+                    [setObj, res.locals.user.username],
                     (errInsert, resInsert) => {
                         if (errInsert) return res.json({ success: false, message: 'Unable to update user', err: errInsert});
                         return res.json({ success: true, data: resInsert });
