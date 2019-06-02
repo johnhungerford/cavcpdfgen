@@ -7,7 +7,7 @@ import * as ajax from '../../api/ajaxfunctions';
 
 import styles from './Login.module.css';
 
-export default class DataEntry extends Component {
+export default class Login extends Component {
     constructor(props) {
         super(props);
     }
@@ -59,6 +59,7 @@ export default class DataEntry extends Component {
                     ...oldState,
                     auth: {
                         ...oldState.auth,
+                        password: '',
                         loggedin: true,
                         promptlogin: false,
                     },
